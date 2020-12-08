@@ -2,8 +2,8 @@ FROM ubuntu:16.04
 LABEL maintainer="hcorion"
 
 
-ENV QTVER=5.14.2
-ENV QTVERMIN=514
+ENV QTVER=5.15.2
+ENV QTVERMIN=515
 ENV LLVMVER=11
 ENV GCCVER=9
 
@@ -15,7 +15,7 @@ ENV GXX_BINARY=g++-${GCCVER}
 
 RUN \
 	apt-get update -y && \
-	apt-get install -y curl libcurl4-gnutls-dev software-properties-common apt-transport-https && \
+	apt-get install -y curl libcurl4-openssl-dev software-properties-common apt-transport-https && \
 	curl -Lvs https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
 	add-apt-repository -y ppa:beineri/opt-qt-${QTVER}-xenial && \
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
@@ -27,7 +27,7 @@ RUN \
 	libasound2-dev libopenal-dev freeglut3-dev libudev-dev libevdev-dev libpulse-dev libxrandr-dev \
 	libwayland-dev libwayland-cursor0 libwayland-client0 libwayland-server0 \
 	desktop-file-utils dput gnupg pbuilder ubuntu-dev-tools apt-file \
-	qt${QTVERMIN}-meta-minimal qt${QTVERMIN}svg && \
+	qt${QTVERMIN}base qt${QTVERMIN}declarative qt${QTVERMIN}xmlpatterns qt${QTVERMIN}svg && \
 	apt-get install --only-upgrade dpkg
 	
 RUN \
@@ -99,3 +99,13 @@ RUN \
 	cd ../.. && \
 	rm ./*.tar.gz && \
 	rm -r ./SDL2*
+
+ENV SHELLCHECKVER=0.7.1
+RUN \
+	curl -sL -o shellcheck.tar.gz https://github.com/koalaman/shellcheck/releases/download/v0.7.1/shellcheck-v${SHELLCHECKVER}.linux.x86_64.tar.xz && \
+	tar -xf shellcheck.tar.gz && \
+	cd shellcheck* && \
+	cp ./shellcheck /usr/bin/ && \
+	cd .. && \
+	rm -r ./shellcheck* && \
+	shellcheck --version
