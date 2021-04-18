@@ -1,11 +1,11 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 LABEL maintainer="hcorion"
 
 
 ENV QTVER=5.15.2
 ENV QTVERMIN=515
-ENV LLVMVER=11
-ENV GCCVER=9
+ENV LLVMVER=12
+ENV GCCVER=10
 
 ENV CLANG_BINARY=clang-${LLVMVER}
 ENV CLANGXX_BINARY=clang++-${LLVMVER}
@@ -17,9 +17,9 @@ RUN \
 	apt-get update -y && \
 	apt-get install -y curl libcurl4-openssl-dev software-properties-common apt-transport-https && \
 	curl -Lvs https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
-	add-apt-repository -y ppa:beineri/opt-qt-${QTVER}-xenial && \
+	add-apt-repository -y ppa:beineri/opt-qt-${QTVER}-bionic && \
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-	add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-${LLVMVER} main" && \
+	add-apt-repository -y "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${LLVMVER} main" && \
 	apt-get update -y --fix-missing && \
 	\
 	apt-get -qq install -y \
@@ -45,12 +45,12 @@ RUN \
 	cmake --version
 
 # We gotta build our own version of Ninja as well
-ENV NINJAVER=1.10.1
+ENV NINJAVER=1.10.2
 RUN \
 	curl -sL -o ninja.tar.gz https://github.com/ninja-build/ninja/archive/v${NINJAVER}.tar.gz && \
 	tar -xf ninja.tar.gz && \
 	cd ninja-* && \
-	cmake -Bbuild-cmake -H. && \
+	cmake -Bbuild-cmake -DCMAKE_C_COMPILER=$CLANG_BINARY -DCMAKE_CXX_COMPILER=$CLANGXX_BINARY -H. && \
 	cmake --build build-cmake && \
 	cp ./build-cmake/ninja /usr/bin/ninja && \
 	cd ../ && \
