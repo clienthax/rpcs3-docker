@@ -5,7 +5,7 @@ LABEL maintainer="hcorion"
 ENV QTVER=5.15.2
 ENV QTVERMIN=515
 ENV LLVMVER=12
-ENV GCCVER=10
+ENV GCCVER=11
 
 ENV CLANG_BINARY=clang-${LLVMVER}
 ENV CLANGXX_BINARY=clang++-${LLVMVER}
@@ -28,18 +28,21 @@ RUN \
 	libwayland-dev libwayland-cursor0 libwayland-client0 libwayland-server0 \
 	desktop-file-utils dput gnupg pbuilder ubuntu-dev-tools apt-file \
 	qt${QTVERMIN}base qt${QTVERMIN}declarative qt${QTVERMIN}xmlpatterns qt${QTVERMIN}svg && \
-	apt-get install --only-upgrade dpkg
+	apt-get install --only-upgrade dpkg && \
+	apt-get clean autoclean && \
+	apt-get autoremove --yes && \
+	rm -rf /var/lib/apt
 	
 RUN \
-	curl -sLO http://http.us.debian.org/debian/pool/main/g/glew/libglew2.2_2.2.0-1_amd64.deb && \
-	curl -sLO http://http.us.debian.org/debian/pool/main/g/glew/libglew-dev_2.2.0-1_amd64.deb && \
+	curl -sSfLO http://http.us.debian.org/debian/pool/main/g/glew/libglew2.2_2.2.0-1_amd64.deb && \
+	curl -sSfLO http://http.us.debian.org/debian/pool/main/g/glew/libglew-dev_2.2.0-1_amd64.deb && \
 	dpkg -i ./*.deb && \
 	rm ./*.deb
 
 # Setup newer CMake
 ENV CMAKEVER=3.16.9
 RUN \
-	curl -sLO https://cmake.org/files/v${CMAKEVER%.*}/cmake-${CMAKEVER}-Linux-x86_64.sh && \
+	curl -sSfLO https://cmake.org/files/v${CMAKEVER%.*}/cmake-${CMAKEVER}-Linux-x86_64.sh && \
 	sh cmake-${CMAKEVER}-Linux-x86_64.sh --skip-license && \
 	rm ./cmake*.sh && \
 	cmake --version
@@ -47,7 +50,7 @@ RUN \
 # We gotta build our own version of Ninja as well
 ENV NINJAVER=1.10.2
 RUN \
-	curl -sL -o ninja.tar.gz https://github.com/ninja-build/ninja/archive/v${NINJAVER}.tar.gz && \
+	curl -sSfL -o ninja.tar.gz https://github.com/ninja-build/ninja/archive/v${NINJAVER}.tar.gz && \
 	tar -xf ninja.tar.gz && \
 	cd ninja-* && \
 	cmake -Bbuild-cmake -DCMAKE_C_COMPILER=$CLANG_BINARY -DCMAKE_CXX_COMPILER=$CLANGXX_BINARY -H. && \
@@ -61,7 +64,7 @@ RUN \
 ENV VULKAN_HEADER_VER=1.2.154.0
 ENV VULKAN_LOADER_VER=1.2.154.1
 RUN \
-	curl -sL -o Vulkan-Headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/sdk-${VULKAN_HEADER_VER}.tar.gz && \
+	curl -sSfL -o Vulkan-Headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/sdk-${VULKAN_HEADER_VER}.tar.gz && \
 	tar -xf Vulkan-Headers*.tar.gz && \
 	cd Vulkan-Headers* && \
 	mkdir build && cd build && \
@@ -73,7 +76,7 @@ RUN \
 	rm ./*.tar.gz && \
 	rm -r ./Vulkan-Headers*
 RUN \
-	curl -sL -o Vulkan-Loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/sdk-${VULKAN_LOADER_VER}.tar.gz && \
+	curl -sSfL -o Vulkan-Loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/sdk-${VULKAN_LOADER_VER}.tar.gz && \
 	tar -xf Vulkan-Loader.tar.gz && \
 	cd Vulkan-Loader* && \
 	mkdir build && cd build && \
@@ -86,9 +89,9 @@ RUN \
 	rm -r ./Vulkan-Loader*
 
 # We need to build a custom version of SDL2 as well
-ENV SDL2VER=2.0.12
+ENV SDL2VER=2.0.14
 RUN \
-	curl -sL -o SDL2.tar.gz https://www.libsdl.org/release/SDL2-${SDL2VER}.tar.gz && \
+	curl -sSfL -o SDL2.tar.gz https://www.libsdl.org/release/SDL2-${SDL2VER}.tar.gz && \
 	tar -xf SDL2.tar.gz && \
 	cd SDL2* && \
 	mkdir build && cd build && \
@@ -100,12 +103,18 @@ RUN \
 	rm ./*.tar.gz && \
 	rm -r ./SDL2*
 
-ENV SHELLCHECKVER=0.7.1
+ENV SHELLCHECKVER=0.7.2
 RUN \
-	curl -sL -o shellcheck.tar.gz https://github.com/koalaman/shellcheck/releases/download/v0.7.1/shellcheck-v${SHELLCHECKVER}.linux.x86_64.tar.xz && \
+	curl -sSfL -o shellcheck.tar.gz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECKVER}/shellcheck-v${SHELLCHECKVER}.linux.x86_64.tar.xz && \
 	tar -xf shellcheck.tar.gz && \
 	cd shellcheck* && \
 	cp ./shellcheck /usr/bin/ && \
 	cd .. && \
 	rm -r ./shellcheck* && \
 	shellcheck --version
+
+# Need to patch Qt for compatibility with GCC 11
+# See https://codereview.qt-project.org/c/qt/qtbase/+/339417 and https://github.com/RPCS3/rpcs3/issues/10291
+RUN \
+	sed -i 's/ThreadEngineStarter<void>(ThreadEngine<void> \*_threadEngine)/ThreadEngineStarter(ThreadEngine<void> \*_threadEngine)/' \
+	/opt/qt515/include/QtConcurrent/qtconcurrentthreadengine.h

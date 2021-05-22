@@ -16,5 +16,5 @@ fi
 
 echo "Building rpcs3-docker-$distro_release as version $version."
 pushd $distro_release
-docker build -t rpcs3/rpcs3-docker-$distro_release:$version .
+docker build -t rpcs3/rpcs3-ci-$distro_release:$version .
 popd
