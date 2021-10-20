@@ -118,4 +118,3 @@ RUN \
 RUN \
 	sed -i 's/ThreadEngineStarter<void>(ThreadEngine<void> \*_threadEngine)/ThreadEngineStarter(ThreadEngine<void> \*_threadEngine)/' \
 	/opt/qt515/include/QtConcurrent/qtconcurrentthreadengine.h
-
