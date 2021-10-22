@@ -4,7 +4,7 @@ LABEL maintainer="hcorion"
 
 ENV QTVER=5.15.2
 ENV QTVERMIN=515
-ENV LLVMVER=12
+ENV LLVMVER=13
 ENV GCCVER=11
 
 ENV CLANG_BINARY=clang-${LLVMVER}
@@ -34,8 +34,8 @@ RUN \
 	rm -rf /var/lib/apt
 	
 RUN \
-	curl -sSfLO http://http.us.debian.org/debian/pool/main/g/glew/libglew2.2_2.2.0-1_amd64.deb && \
-	curl -sSfLO http://http.us.debian.org/debian/pool/main/g/glew/libglew-dev_2.2.0-1_amd64.deb && \
+	curl -sSfLO http://http.us.debian.org/debian/pool/main/g/glew/libglew2.2_2.2.0-4_amd64.deb && \
+	curl -sSfLO http://http.us.debian.org/debian/pool/main/g/glew/libglew-dev_2.2.0-4_amd64.deb && \
 	dpkg -i ./*.deb && \
 	rm ./*.deb
 
@@ -89,7 +89,7 @@ RUN \
 	rm -r ./Vulkan-Loader*
 
 # We need to build a custom version of SDL2 as well
-ENV SDL2VER=2.0.14
+ENV SDL2VER=2.0.16
 RUN \
 	curl -sSfL -o SDL2.tar.gz https://www.libsdl.org/release/SDL2-${SDL2VER}.tar.gz && \
 	tar -xf SDL2.tar.gz && \
