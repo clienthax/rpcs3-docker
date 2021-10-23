@@ -27,7 +27,7 @@ RUN \
 	libasound2-dev libopenal-dev freeglut3-dev libudev-dev libevdev-dev libpulse-dev libxrandr-dev libglvnd-dev \
 	libwayland-dev libwayland-cursor0 libwayland-client0 libwayland-server0 \
 	desktop-file-utils dput gnupg pbuilder ubuntu-dev-tools apt-file \
-	qt${QTVERMIN}base qt${QTVERMIN}declarative qt${QTVERMIN}xmlpatterns qt${QTVERMIN}svg qt${QTVERMIN}multimedia qt${QTVERMIN}multimediawidgets && \
+	qt${QTVERMIN}base qt${QTVERMIN}declarative qt${QTVERMIN}xmlpatterns qt${QTVERMIN}svg qt${QTVERMIN}multimedia && \
 	apt-get install --only-upgrade dpkg && \
 	apt-get clean autoclean && \
 	apt-get autoremove --yes && \
