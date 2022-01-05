@@ -103,7 +103,7 @@ RUN \
 	rm ./*.tar.gz && \
 	rm -r ./SDL2*
 
-ENV SHELLCHECKVER=0.7.2
+ENV SHELLCHECKVER=0.8.0
 RUN \
 	curl -sSfL -o shellcheck.tar.gz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECKVER}/shellcheck-v${SHELLCHECKVER}.linux.x86_64.tar.xz && \
 	tar -xf shellcheck.tar.gz && \
