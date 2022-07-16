@@ -1,4 +1,4 @@
-static_version=1.1
+static_version=1.5
 branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 tag=$(git describe --tags 2>/dev/null)
 distro_release=bionic

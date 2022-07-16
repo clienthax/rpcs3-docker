@@ -4,7 +4,7 @@ LABEL maintainer="hcorion"
 
 ENV QTVER=5.15.2
 ENV QTVERMIN=515
-ENV LLVMVER=13
+ENV LLVMVER=14
 ENV GCCVER=11
 
 ENV CLANG_BINARY=clang-${LLVMVER}
@@ -48,7 +48,7 @@ RUN \
 	cmake --version
 
 # We gotta build our own version of Ninja as well
-ENV NINJAVER=1.10.2
+ENV NINJAVER=1.11.0
 RUN \
 	curl -sSfL -o ninja.tar.gz https://github.com/ninja-build/ninja/archive/v${NINJAVER}.tar.gz && \
 	tar -xf ninja.tar.gz && \
@@ -89,7 +89,7 @@ RUN \
 	rm -r ./Vulkan-Loader*
 
 # We need to build a custom version of SDL2 as well
-ENV SDL2VER=2.0.18
+ENV SDL2VER=2.0.22
 RUN \
 	curl -sSfL -o SDL2.tar.gz https://www.libsdl.org/release/SDL2-${SDL2VER}.tar.gz && \
 	tar -xf SDL2.tar.gz && \
