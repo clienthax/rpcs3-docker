@@ -22,7 +22,7 @@ RUN \
 	add-apt-repository -y "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${LLVMVER} main" && \
 	apt-get update -y --fix-missing && \
 	\
-	apt-get -qq install -y \
+	apt-get install -y \
 	build-essential binutils $GCC_BINARY $GXX_BINARY git ccache bc $CLANG_BINARY $CLANGXX_BINARY $LLD_BINARY \
 	libasound2-dev libopenal-dev freeglut3-dev libevdev-dev libpulse-dev libxrandr-dev libglvnd-dev \
 	libwayland-dev libwayland-cursor0 libwayland-client0 libwayland-server0 \
@@ -32,6 +32,7 @@ RUN \
 	apt-get clean autoclean && \
 	apt-get autoremove --yes && \
 	rm -rf /var/lib/apt
+
 # libudev-dev depenency is broken
 # libudev-dev : Depends: libudev1 (= 237-3ubuntu10.53) but 237-3ubuntu10.54 is to be installed
 
@@ -42,7 +43,7 @@ RUN \
 	rm ./*.deb
 
 # Setup newer CMake
-ENV CMAKEVER=3.16.9
+ENV CMAKEVER=3.24.0
 RUN \
 	curl -sSfLO https://cmake.org/files/v${CMAKEVER%.*}/cmake-${CMAKEVER}-Linux-x86_64.sh && \
 	sh cmake-${CMAKEVER}-Linux-x86_64.sh --skip-license && \
@@ -105,6 +106,7 @@ RUN \
 	rm ./*.tar.gz && \
 	rm -r ./SDL2*
 
+# aarch64
 ENV SHELLCHECKVER=0.8.0
 RUN \
 	curl -sSfL -o shellcheck.tar.gz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECKVER}/shellcheck-v${SHELLCHECKVER}.linux.x86_64.tar.xz && \
