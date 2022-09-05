@@ -18,6 +18,7 @@ RUN \
 	apt-get install -y curl libcurl4-openssl-dev software-properties-common apt-transport-https && \
 	curl -Lvs https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
 	add-apt-repository -y ppa:beineri/opt-qt-${QTVER}-bionic && \
+	add-apt-repository ppa:theofficialgman/opt-qt-${QTVER}-bionic-arm && \
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
 	add-apt-repository -y "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${LLVMVER} main" && \
 	apt-get update -y --fix-missing && \
