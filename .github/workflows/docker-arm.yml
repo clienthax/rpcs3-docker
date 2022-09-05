@@ -31,6 +31,6 @@ jobs:
           context: .
           platforms: linux/arm64
           push: true
-          tags: clienthax/rpcs3-docker-tests:latest
-          file: bionic/Dockerfile
+          tags: clienthax/rpcs3-docker-tests:latest-arm
+          file: bionic/Dockerfile.arm64
 
