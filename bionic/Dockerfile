@@ -13,7 +13,10 @@ ENV LLD_BINARY=lld-${LLVMVER}
 ENV GCC_BINARY=gcc-${GCCVER}
 ENV GXX_BINARY=g++-${GCCVER}
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -y
+
 RUN apt-get install -y curl libcurl4-openssl-dev software-properties-common apt-transport-https
 RUN curl -Lvs https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 RUN add-apt-repository -y ppa:beineri/opt-qt-${QTVER}-bionic
@@ -21,13 +24,17 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
 RUN add-apt-repository -y "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${LLVMVER} main"
 RUN apt-get update -y --fix-missing
 	
-RUN apt-get -qq install -y \
+RUN apt-get install -y \
 	build-essential binutils $GCC_BINARY $GXX_BINARY git ccache bc $CLANG_BINARY $CLANGXX_BINARY $LLD_BINARY \
-	libasound2-dev libopenal-dev freeglut3-dev libudev-dev libevdev-dev libpulse-dev libxrandr-dev libglvnd-dev \
+	libasound2-dev libopenal-dev freeglut3-dev libevdev-dev libpulse-dev libxrandr-dev libglvnd-dev \
 	libwayland-dev libwayland-cursor0 libwayland-client0 libwayland-server0 \
 	desktop-file-utils dput gnupg pbuilder ubuntu-dev-tools apt-file \
 	qt${QTVERMIN}base qt${QTVERMIN}declarative qt${QTVERMIN}xmlpatterns qt${QTVERMIN}svg qt${QTVERMIN}multimedia
-	
+
+# libudev-dev depenency is broken
+# libudev-dev : Depends: libudev1 (= 237-3ubuntu10.53) but 237-3ubuntu10.54 is to be installed
+
+
 RUN apt-get install --only-upgrade dpkg
 RUN apt-get clean autoclean
 RUN apt-get autoremove --yes
